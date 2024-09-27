@@ -7,5 +7,8 @@ const uploadController=require("../Controller/upload");
 router.use(fileUpload());
 router.post('/',uploadController);
 
-
+router.get('/',(req,res)=>{
+  console.log("hi");
+  res.send("okay");
+})
   module.exports = router
