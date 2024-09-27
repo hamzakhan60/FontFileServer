@@ -12,7 +12,7 @@ const corsOptions = {
   optionsSuccessStatus: 200           // For older browsers that may not support default 204 status
 };
 
-app.use(cors());
+app.options('*', cors());
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Endpoint for uploading the font
