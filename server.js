@@ -22,6 +22,18 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 // Endpoint for uploading the font
 app.use('/upload', useUploadRouter);
 
+app.get('/font', (req, res) => {
+    const fontPath = path.join('/tmp', 'user-font.ttf');
+
+  // Send the font file as response
+  res.sendFile(fontPath, (err) => {
+    if (err) {
+      console.error('Error serving font file:', err);
+      res.status(404).send('Font file not found.');
+    }
+  });
+});
+
 // Start the server
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);
