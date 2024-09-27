@@ -4,7 +4,7 @@ const path = require('path');
 const useUploadRouter=require("./Routers/upload");
 const app = express();
 require('dotenv').config();
-app.use(cors({origin:['http://localhost:5173/']}));
+app.use(cors({origin:['http://localhost:5173']}));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Endpoint for uploading the font
