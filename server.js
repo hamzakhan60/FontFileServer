@@ -4,12 +4,6 @@ const path = require('path');
 const useUploadRouter=require("./Routers/upload");
 const app = express();
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const useUploadRouter=require("./Routers/upload");
-const app = express();
-require('dotenv').config();
 // CORS configuration
 const corsOptions = {
   origin: ['http://localhost:5173'],  // Allow requests from this origin
@@ -19,15 +13,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use('/public', express.static(path.join(__dirname, 'public')));
-
-// Endpoint for uploading the font
-app.use('/upload', useUploadRouter);
-
-// Start the server
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Server is running on port ${process.env.PORT || "3001"}`);
-});
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Endpoint for uploading the font
