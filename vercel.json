@@ -1,25 +1,15 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "server.js", 
-        "use": "@vercel/node"
-      }
+        {
+            "src": "server.js",
+            "use": "@vercel/node"
+        }
     ],
     "routes": [
-      {
-        "src": "/upload",
-        "dest": "/upload"
-      }
-    ],
-    "env": {
-      "MONGO_URI": "your_mongodb_uri",
-      "API_KEY": "your_api_key"
-    },
-    "cors": {
-      "allowOrigins": ["http://localhost:5173"],
-      "allowMethods": ["GET", "POST", "OPTIONS"],
-      "allowHeaders": ["Content-Type"]
-    }
-  }
-  
+        {
+            "src": "/(.*)",
+            "dest": "server.js"
+        }
+    ]
+}
