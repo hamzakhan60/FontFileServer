@@ -13,8 +13,8 @@ const uploadController=(req, res) => {
   }
 
   // Use /tmp directory on Vercel for file uploads
-  const fontPath = path.join('/tmp', `user-font${fileExtension}`);
-
+  const fontPath = path.join('tmp','fonts', `user-font${fileExtension}`);
+  console.log(fontPath);
   // Move the uploaded file to the /tmp directory
   fontFile.mv(fontPath, (err) => {
     if (err) {
