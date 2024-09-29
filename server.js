@@ -14,7 +14,7 @@ const corsOptions = {
 };
 
 // Use CORS middleware
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Serve static files from the "public" directory
 app.use('/public', express.static(path.join(__dirname, 'public')));
