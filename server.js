@@ -23,12 +23,18 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/upload', useUploadRouter);
 
 app.get('/font', (req, res) => {
-    const fontPath = path.join('/tmp', 'user-font.ttf');
+  const fontPath = path.join('/tmp', 'user-font.ttf');
 
   // Send the font file as response
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
   res.sendFile(fontPath, (err) => {
     if (err) {
       console.error('Error serving font file:', err);
+
       res.status(404).send('Font file not found.');
     }
   });
