@@ -1,8 +1,12 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const path = require('path');
 const useUploadRouter = require('./Routers/upload');
+
 const uploadImageRouter=require('./Routers/uploadImage');
+
+const useUploadPrintifyRouter = require('./Routers/upload-printify');
 const app = express();
 
 const axios = require('axios');
@@ -20,6 +24,7 @@ const corsOptions = {
 
 // Use CORS middleware
 app.use(cors());
+app.use(bodyParser.json());
 
 
 
@@ -31,6 +36,7 @@ app.use('/uploadImage',uploadImageRouter);
 
 // Endpoint for uploading the font
 app.use('/upload', useUploadRouter);
+app.use('/upload-printify', useUploadPrintifyRouter);
 
 
 
