@@ -209,7 +209,7 @@ async function getMockupUrl(taskKey) {
           console.log('Mockup task completed. URL:', mockupUrl);
         } else {
           console.log('Mockup task is still pending, retrying...');
-          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 5 seconds before retrying
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 5 seconds before retrying
         }
       } else {
         console.error('Error getting mockup task status:', response.data);
