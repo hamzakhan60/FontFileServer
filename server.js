@@ -1,8 +1,12 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const path = require('path');
 const useUploadRouter = require('./Routers/upload');
+
 const uploadImageRouter=require('./Routers/uploadImage');
+
+const useUploadPrintifyRouter = require('./Routers/upload-printify');
 const app = express();
 
 const axios = require('axios');
@@ -20,6 +24,7 @@ const corsOptions = {
 
 // Use CORS middleware
 app.use(cors());
+app.use(bodyParser.json());
 
 app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-encoded payload limit
@@ -33,6 +38,7 @@ app.use('/uploadImage',uploadImageRouter);
 
 // Endpoint for uploading the font
 app.use('/upload', useUploadRouter);
+app.use('/upload-printify', useUploadPrintifyRouter);
 
 
 
