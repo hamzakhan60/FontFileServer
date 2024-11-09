@@ -28,6 +28,8 @@ app.use(bodyParser.json());
 app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-encoded payload limit
 
+app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
+app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-encoded payload limit
 
 
 /*step 1: upload image on supabase 
