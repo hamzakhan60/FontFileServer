@@ -5,8 +5,8 @@ const { createClient } = require('@supabase/supabase-js');
 const apiKey = 'VLUOC2erat9bErXekeiQ3V2fmQ82vz6Vt3Htjv5o';
 
 // Initialize Supabase client with your project's URL and anon/public key
-const supabaseUrl = 'https://cynlnxqqcyuxauxvxcjf.supabase.co';  // Replace with your Supabase URL
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5bmxueHFxY3l1eGF1eHZ4Y2pmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc4MDA4MTQsImV4cCI6MjA0MzM3NjgxNH0.0hzVuAKkvFRzNo1O4WzDw1wQTCxONIxIZTsg5t1oVac';  // Replace with your Supabase anon key
+const supabaseUrl = 'https://peflgfeieqtklcpkhszz.supabase.co';  // Replace with your Supabase URL
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmxnZmVpZXF0a2xjcGtoc3p6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzEyMDEzNzksImV4cCI6MjA0Njc3NzM3OX0.OlEbttWuDvHHy9svUAr2quK4IrmRgkGUI0i8Z9LHfrU';  // Replace with your Supabase anon key
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Node.js-compatible base64 to Blob conversion
