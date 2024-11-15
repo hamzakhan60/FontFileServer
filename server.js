@@ -28,10 +28,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-app.use(express.json({ limit: '50mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
-app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 10000 }));// Increase URL-encoded payload limit
-
-
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Route-specific timeout middleware
 app.use('/getMockup', (req, res, next) => {
