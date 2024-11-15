@@ -33,6 +33,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-
 /*step 1: upload image on supabase 
 step 2: get imageUrl from supabase
 step 3 upload image on printfull*/
+app.setTimeout(120000);
 
 app.use('/uploadImage',uploadImageRouter);
 
