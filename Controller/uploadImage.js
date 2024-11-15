@@ -136,8 +136,8 @@ async function uploadBase64ImageController(req, res) {
       payload.map(async (item) => {
         const mockupTaskKey = await createMockupTask(item, publicUrl);
         return {
-          product_id: item.product_id,
-          success: !!mockupTaskKey,
+          "product_id": item.product_id,
+          "success": !!mockupTaskKey,
           mockupTaskKey,
           message: mockupTaskKey
             ? `Mockup generated successfully for product ID: ${item.product_id}`
@@ -158,19 +158,8 @@ async function uploadBase64ImageController(req, res) {
         printfulResponse
       });
     }
-    // Map and retrieve URLs for successful mockups
-    const successfulUrls = await Promise.all(
-      successfulMockups.map(async (response) => ({
-        product_id: response.product_id,
-        mockupUrl: await getMockupUrl(response.mockupTaskKey),
-        message: response.message,
-      }))
-    );
-    console.log("succesful urls", successfulUrls);
-
-    // Respond with success and Printful's response
-    if (successfulUrls.length)
-      return res.status(200).json({ message: "Image uploaded successfully", printfulResponse, successfulUrls });
+    
+      return res.status(200).json({ message: "Image uploaded successfully", printfulResponse, successfulMockups });
   } catch (err) {
     console.error("Error during the image upload process:", err);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -240,47 +229,6 @@ async function createMockupTask(data, publicUrl) {
 }
 
 
-
-async function getMockupUrl(taskKey) {
-  const url = `https://api.printful.com/mockup-generator/task?task_key=${taskKey}&store_id=14805728`;
-
-  try {
-    const headers = {
-      'Authorization': `Bearer ${apiKey}`,
-    };
-    console.log("hi i am in try block");
-    let status = 'pending';
-    let mockupUrl = null;
-
-
-
-    while (status === 'pending') {
-      console.log("hi i am in while loop");
-      const response = await axios.get(url, { headers });
-      if (response.status === 200) {
-
-        const result = response.data.result;
-        status = result.status;
-
-        if (status === 'completed') {
-          mockupUrl = result.mockups[0].mockup_url;
-          console.log('Mockup task completed. URL:', mockupUrl);
-        } else {
-          console.log('Mockup task is still pending, retrying...');
-          await new Promise(resolve => setTimeout(resolve, 500)); // Wait for 5 seconds before retrying
-        }
-      } else {
-        console.error('Error getting mockup task status:', response.data);
-        break;
-      }
-    }
-
-    return mockupUrl;
-  } catch (error) {
-    console.error('Error while checking mockup task status:', error.message);
-    return null;
-  }
-}
 
 
 module.exports = uploadBase64ImageController;
