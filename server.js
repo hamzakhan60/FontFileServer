@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const useUploadRouter = require('./Routers/upload');
+const getMockUrl=require('./Routers/getMockup');
 
 const uploadImageRouter=require('./Routers/uploadImage');
 
@@ -25,19 +26,28 @@ const corsOptions = {
 // Use CORS middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
-app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-encoded payload limit
-
-app.use(express.json({ limit: '10mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
-app.use(express.urlencoded({ limit: '10mb', extended: true })); // Increase URL-encoded payload limit
 
 
+app.use(express.json({ limit: '50mb' })); // Increase JSON payload limit to 10MB (adjust as needed)
+app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 10000 }));// Increase URL-encoded payload limit
+
+
+
+// Route-specific timeout middleware
+app.use('/getMockup', (req, res, next) => {
+  // Set timeout for this route to 5 minutes (300,000 ms)
+  res.setTimeout(300000, () => {
+    console.log('Request timed out.');
+    res.status(504).send('Request timeout');
+  });
+  next();
+});
 /*step 1: upload image on supabase 
 step 2: get imageUrl from supabase
 step 3 upload image on printfull*/
 
 app.use('/uploadImage',uploadImageRouter);
-
+app.use('/getMockup',getMockUrl);
 // Endpoint for uploading the font
 app.use('/upload', useUploadRouter);
 app.use('/upload-printify', useUploadPrintifyRouter);

@@ -136,8 +136,8 @@ async function uploadBase64ImageController(req, res) {
       payload.map(async (item) => {
         const mockupTaskKey = await createMockupTask(item, publicUrl);
         return {
-          product_id: item.product_id,
-          success: !!mockupTaskKey,
+          "product_id": item.product_id,
+          "success": !!mockupTaskKey,
           mockupTaskKey,
           message: mockupTaskKey
             ? `Mockup generated successfully for product ID: ${item.product_id}`
@@ -158,19 +158,23 @@ async function uploadBase64ImageController(req, res) {
         printfulResponse
       });
     }
-    // Map and retrieve URLs for successful mockups
-    const successfulUrls = await Promise.all(
-      successfulMockups.map(async (response) => ({
-        product_id: response.product_id,
-        mockupUrl: await getMockupUrl(response.mockupTaskKey),
-        message: response.message,
-      }))
-    );
-    console.log("succesful urls", successfulUrls);
+    // }
+    // console.log("mockupResponses",mockupResponses);
+    // console.log("sucessful mockup",successfulMockups);
 
-    // Respond with success and Printful's response
-    if (successfulUrls.length)
-      return res.status(200).json({ message: "Image uploaded successfully", printfulResponse, successfulUrls });
+    // // Map and retrieve URLs for successful mockups
+    // const successfulUrls = await Promise.all(
+    //   successfulMockups.map(async (response) => ({
+    //     product_id: response.product_id,
+    //     mockupUrl: await getMockupUrl(response.mockupTaskKey),
+    //     message: response.message,
+    //   }))
+    // );
+    // console.log("succesful urls", successfulUrls);
+
+    // // Respond with success and Printful's response
+    // if (successfulUrls.length)
+      return res.status(200).json({ message: "Image uploaded successfully", printfulResponse, successfulMockups });
   } catch (err) {
     console.error("Error during the image upload process:", err);
     return res.status(500).json({ error: "Internal Server Error" });
