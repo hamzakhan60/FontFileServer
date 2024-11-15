@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // Route-specific timeout middleware
 app.use('/getMockup', (req, res, next) => {
   // Set timeout for this route to 5 minutes (300,000 ms)
-  res.setTimeout(300000, () => {
+  res.setTimeout(500000, () => {
     console.log('Request timed out.');
     res.status(504).send('Request timeout');
   });
