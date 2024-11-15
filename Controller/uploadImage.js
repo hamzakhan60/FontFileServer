@@ -24,7 +24,7 @@ function base64ToBlob(base64, mime) {
 function getImageUrl(path) {
 
   const sanitizedPath = path.replace(/\s/g, '').replace(/\n/g, '');
-  console.log("path:",path);
+  console.log("path:", path);
   const { data, error } = supabase.storage
     .from('Images')
     .getPublicUrl(sanitizedPath);
@@ -33,7 +33,7 @@ function getImageUrl(path) {
     console.error("Error getting public URL:", error.message);
     return null; // Return null in case of error
   }
-  console.log("supabase url:",data);
+  console.log("supabase url:", data);
   return data.publicUrl;
 }
 
@@ -68,31 +68,109 @@ async function uploadBase64ImageController(req, res) {
     if (printfulResponse.error) {
       return res.status(500).json({ error: "Failed to upload image to Printful" });
     }
-    const mockupTask_key=await createMockupTask(publicUrl);
-    if(!mockupTask_key){
-      return res.status(207).json({
-        error: "Failed to generate mockup",
-        message: "Image uploaded successfully!",
-        printfulResponse
-      })
-    }
-    let mockupUrl;
-    if(mockupTask_key){
-    console.log("\ntask_key",mockupTask_key);
+    const payload = [
+      {
+        product_id: 223,
+        body: {
+          "variant_ids": [
+            8024,
+            8025,
+            8026,
+            8027,
+            8028
+          ],
+          "printfile_id": 1,
+          "format": "jpg",
+          "width": 0,
+          "product_options": {},
+          "files": [
+            {
+              "placement": "front",
+              "image_url": publicUrl,
+              "position": {
+                "area_width": 1800,
+                "area_height": 2400,
+                "width": 1200,
+                "height": 1600,
+                "top": 0,
+                "left": 300
+              }
+            }
+          ]
+        }
+      },
+      {
+        product_id: 206,
+        body: {
+          "variant_ids": [
+            
+            7853,
+            
+          ],
+          "printfile_id": 75,
+          "format": "jpg",
+          "width": 0,
+          "product_options": {},
+          "files": [
+            {
+              "placement": "embroidery_front_large",
+              "image_url": publicUrl,
+              "position": {
+                "area_width": 1650,
+                "area_height": 600,
+                "width": 825,
+                "height": 600,
+                "top": 0,
+                "left": 412
+              }
+            }
+          ]
+        }
+      }
+    ]
 
-    mockupUrl=await getMockupUrl(mockupTask_key);
-    console.log("mockup after req:",mockupUrl);
-    if(!mockupUrl){
+
+
+
+    const mockupResponses = await Promise.all(
+      payload.map(async (item) => {
+        const mockupTaskKey = await createMockupTask(item, publicUrl);
+        return {
+          product_id: item.product_id,
+          success: !!mockupTaskKey,
+          mockupTaskKey,
+          message: mockupTaskKey
+            ? `Mockup generated successfully for product ID: ${item.product_id}`
+            : `Failed to generate mockup for product ID: ${item.product_id}`,
+        };
+      })
+    );
+    // Filter successful and failed mockup tasks
+    const successfulMockups = mockupResponses.filter(response => response.success);
+    const failedMockups = mockupResponses.filter(response => !response.success);
+
+    // Check if all tasks failed
+    if (successfulMockups.length === 0) {
       return res.status(207).json({
         error: "Failed to generate mockup",
         message: "Image uploaded successfully!",
+        details: failedMockups,
         printfulResponse
-      })
+      });
     }
-  }
+    // Map and retrieve URLs for successful mockups
+    const successfulUrls = await Promise.all(
+      successfulMockups.map(async (response) => ({
+        product_id: response.product_id,
+        mockupUrl: await getMockupUrl(response.mockupTaskKey),
+        message: response.message,
+      }))
+    );
+    console.log("succesful urls", successfulUrls);
 
     // Respond with success and Printful's response
-    return res.status(200).json({ message: "Image uploaded successfully", printfulResponse,mockupUrl });
+    if (successfulUrls.length)
+      return res.status(200).json({ message: "Image uploaded successfully", printfulResponse, successfulUrls });
   } catch (err) {
     console.error("Error during the image upload process:", err);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -101,7 +179,7 @@ async function uploadBase64ImageController(req, res) {
 
 // Function to upload image to Printful
 async function uploadImageToPrintful(imageUrl) {
-  const url = 'https://api.printful.com/files?store_id=14505302'; // Printful API endpoint for file uploads
+  const url = 'https://api.printful.com/files?store_id=14805728'; // Printful API endpoint for file uploads
 
   try {
     const headers = {
@@ -133,41 +211,21 @@ async function uploadImageToPrintful(imageUrl) {
 
 
 
-async function createMockupTask(imageUrl) {
-  console.log(imageUrl);
-  const url = 'https://api.printful.com/mockup-generator/create-task/679?store_id=14505302';
-  
+async function createMockupTask(data, publicUrl) {
+  data.body.imageUrl = publicUrl;
+  const url = `https://api.printful.com/mockup-generator/create-task/${data.product_id}?store_id=14805728`;
+
   try {
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`,
     };
-  
-    const body = {
-      variant_ids: [17057],
-      printfile_id: 136,
-      format: "jpg",
-      width: 0,
-      product_options: {},
-      files: [
-        {
-          placement: "front",
-          image_url: imageUrl,
-          position: {
-            area_width: 2325,
-            area_height: 2940,
-            width: 1550,
-            height: 1960,
-            top: 0,
-            left: 387,
-          },
-        },
-      ],
-    };
-  
-    const response = await axios.post(url, body, { headers });
+
+
+
+    const response = await axios.post(url, data.body, { headers });
     console.log(response.data.result);
-  
+
     if (response.status === 200) {
       console.log('Mockup task created successfully');
       return response.data.result.task_key; // Return the task key
@@ -184,8 +242,8 @@ async function createMockupTask(imageUrl) {
 
 
 async function getMockupUrl(taskKey) {
-  const url = `https://api.printful.com/mockup-generator/task?task_key=${taskKey}&store_id=14505302`;
-  
+  const url = `https://api.printful.com/mockup-generator/task?task_key=${taskKey}&store_id=14805728`;
+
   try {
     const headers = {
       'Authorization': `Bearer ${apiKey}`,
@@ -194,16 +252,16 @@ async function getMockupUrl(taskKey) {
     let status = 'pending';
     let mockupUrl = null;
 
-    
+
 
     while (status === 'pending') {
       console.log("hi i am in while loop");
       const response = await axios.get(url, { headers });
       if (response.status === 200) {
-        
+
         const result = response.data.result;
         status = result.status;
-        
+
         if (status === 'completed') {
           mockupUrl = result.mockups[0].mockup_url;
           console.log('Mockup task completed. URL:', mockupUrl);
