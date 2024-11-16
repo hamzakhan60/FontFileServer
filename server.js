@@ -13,7 +13,6 @@ const app = express();
 const axios = require('axios');
 const exp = require('constants');
 require('dotenv').config();
-app.use(express.json());
 
 // CORS configuration
 const corsOptions = {
@@ -31,6 +30,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({limit: '50mb', extended: true}));
 app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 app.use(bodyParser.text({ limit: '200mb' }));
+app.use(express.json());
 
 // Route-specific timeout middleware
 app.use('/getMockup', (req, res, next) => {
