@@ -27,10 +27,10 @@ const corsOptions = {
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
-
+ 
+app.use(bodyParser.json({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+app.use(bodyParser.text({ limit: '200mb' }));
 
 // Route-specific timeout middleware
 app.use('/getMockup', (req, res, next) => {
