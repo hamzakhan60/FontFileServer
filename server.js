@@ -34,14 +34,7 @@ app.use(bodyParser.text({ limit: '200mb' }));
 app.use(express.json());
 
 // Route-specific timeout middleware
-app.use('/getMockup', (req, res, next) => {
-  // Set timeout for this route to 5 minutes (300,000 ms)
-  res.setTimeout(500000, () => {
-    console.log('Request timed out.');
-    res.status(504).send('Request timeout');
-  });
-  next();
-});
+
 /*step 1: upload image on supabase 
 step 2: get imageUrl from supabase
 step 3 upload image on printfull*/
