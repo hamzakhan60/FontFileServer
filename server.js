@@ -59,8 +59,7 @@ app.use('/upload-printify', useUploadPrintifyRouter);
 
 
 // Start the server
-var server = app.listen(process.env.PORT || 3001, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log(`Server is running on port ${process.env.PORT || 3001}`);
 });
 
-server.setTimeout(120000);
